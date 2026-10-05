@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 import io
 import gspread
@@ -30,8 +29,23 @@ st.markdown(
 @st.cache_resource
 def init_connection():
   try:
-    sec = st.secrets["gcp_service_account"]
-    creds = json.loads(sec["text_json"]) if "text_json" in sec else dict(sec)
+    creds = {
+        "type": "service_account",
+        "project_id": "veexia-erp",
+        "private_key_id": "da558664cc7462ad484a66ca28d5663dfef96cc7",
+        "private_key": (
+            "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC8mSMVEEGRh+2r\nsONlScvExsK6Jn4WCuxz2F1pCBxEqr/DG8dYFtGn0CmI7SkwZwivs0RuegOp5Wd6\nzXFbg6fLsbvN44bfv2hiYJBeFd3/GKI60ZCw4kwQEk3OvZv9R2VwfcBvU6QCxl7v\nAI+8ilYXqfUorSWyZU0m+KFKGvqoZxRe21KaSpdIhGRdjE2CW8ad5Jth5i3ezikS\np5oUngnAXNH2mTH9X5A9NV0y9eIi/ZlxfR5EVO1V6UYw6wiwbAj4Phna9IEkm51h\nnAguacYHeTYngLC/OoxlcbsjK3YqSEYc73cwTzcEcg3dpDV+nNS0RLdZW1eeQQMS\nXtaiKFVJAgMBAAECggEAM9M9AbfC3NPmaqykABxkQ0F/FxomwbXkvfyxxn/1DKWD\nJoFGqR00JZIdJ8RL8kIN8AIqBtW+lfw1EFjOEqC+Bkpj2jLwyCFX9NimM0R9CXFi\nexlFUmYNEsmE2g/egp4Q8PWNYMoyIpUSV0jnNp8pAz2v4aqa1kfiCJh/8dYyFP4s\npcOdQigPpNV3l7hdVmt7PZncpSD/cKEJADsTZg9lQnRBmBKRL/qtXO+xygVdpEl8\nrev+SON1fMPSsbhoXkQBoZqVJA9prisFG9HS2NWpHfG0syTxoYy4256xJvzBEMX0\no+dSDhFzDRCtk+qVYbFE2Z55vwHgP7+5izZYHfmNdQKBgQD59OpDANdRnZgiM+dT\nYAjhWY7QEttYy6nHFuK0Hqv98ypVDtjcL1S4cUjd6wdhH9JvTi/wsmjhfwqCZA+r\ngq5HzpK9+ev9J/D64pWt0zKE8es/OmvBlbnbFswZVL5HQyBS+5NYVAglvBLaJGzJ\nqZWUyhcXqQpNNcbQ1A7M8FqptwKBgQDBKHLqanqfywE74H57UvhzGqtPDfh491Si\nVN5OU3+CqADOLsDma/IeNaQL8Y70amWeHPr7uCLMKqny/Jb87sqXnhaPB7Rojsm4\nIkWr+/7roOhn+yVFRTBQhp5JPI1k14FB5fSXq1BG90OogaW2SXgjbeQOLQucQrGl\nMA51eBD4/wKBgBQda4S82pcM0aNe/eytu8k2xdFk0xYQPbdx1gict0aWfP+fVEBT\n5sN5Cl4hfdSJFQw0BJOgJ+SNrrDTkJdCyveoXhK/vAgBYNkvxs/YQSaFuWK7NtS7\nUduZuA8JzM47Tqye5jqjeIxg2DuJ1t9bsFfq83TJ+7Q+8aL4jcBcT099AoGAQj5p\nCtPxshOhHLPlLM5Lvs4KqlYUPQg10mZgx2QDev+7JvsJ1Px4ULv8wsvZRyGmMA+o\nU+PWq0aGenr+HUiX2l+xRORTjvhJXgkC8/S8fHr2uZJ8OcF8zGEer+dAZrEx9zOy\nKsHqCiyK26N6/YU82om5iNMSBEkrO4e7rbW7vGkCgYAioIiYCb1zpl98oHMaW5tX\njNzNCGWmXleotTFh7yl811gNSBz+U9Gww0dQxfH5GiYkGtWcVKKV1g7moQ7nM/Ec\nHbu7HSupV3wnH0FoJUUiz3sk88nRVXEHduVKY04akPelhf23JI+ouHftn6dacmMw\n5jx+jUa+I9HSw3wVbGYLPA==\n-----END PRIVATE KEY-----"
+        ),
+        "client_email": "veexia-bot@veexia-erp.iam.gserviceaccount.com",
+        "client_id": "115117847167928117949",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": (
+            "https://www.googleapis.com/robot/v1/metadata/x509/veexia-bot%40veexia-erp.iam.gserviceaccount.com"
+        ),
+        "universe_domain": "googleapis.com",
+    }
     return gspread.service_account_from_dict(creds).open("VeeXia_ERP_DB")
   except Exception as e:
     st.error(f"خطأ الاتصال: {e}")
@@ -105,7 +119,7 @@ else:
   )
 
   if st.session_state.app != "dashboard":
-    if st.button("⬅️ العودة للوحة التحكم"):
+    if st.button("⬅️️ العودة للوحة التحكم"):
       st.session_state.app = "dashboard"
       st.rerun()
 
