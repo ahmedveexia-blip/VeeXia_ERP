@@ -229,4 +229,35 @@ else:
     df_item, s_item = get_data("Items")
     with st.form("i_form"):
       c, n = st.columns(2)
-      code = c.text_input("كود
+      code = c.text_input("كود الصنف")
+      name = n.text_input("اسم الصنف")
+      if st.form_submit_button("إضافة صنف") and name and s_item:
+        s_item.append_row([code, name])
+        st.success("تمت الإضافة!")
+        st.rerun()
+    if not df_item.empty:
+      st.dataframe(df_item, use_container_width=True)
+
+  elif st.session_state.app == "purchases":
+    st.subheader("🛒 الشراء والتوريد")
+    df_h, _ = get_data("tbl_Doc_Header")
+    if not df_h.empty:
+      st.dataframe(df_h, use_container_width=True)
+
+  elif st.session_state.app == "mrp":
+    st.subheader("⚙️ التصنيع (BOM)")
+    df_bom, _ = get_data("tbl_BOM")
+    if not df_bom.empty:
+      st.dataframe(df_bom, use_container_width=True)
+
+  elif st.session_state.app == "expenses":
+    st.subheader("💰 المصروفات")
+    df_e, _ = get_data("tbl_Expenses")
+    if not df_e.empty:
+      st.dataframe(df_e, use_container_width=True)
+
+  elif st.session_state.app == "admin":
+    st.subheader("🔐 المستخدمين")
+    df_u, _ = get_data("tbl_Users")
+    if not df_u.empty:
+      st.dataframe(df_u, use_container_width=True)
