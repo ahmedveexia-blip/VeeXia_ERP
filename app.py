@@ -48,13 +48,6 @@ st.markdown(
 @st.cache_resource
 def init_connection():
   try:
-    # استخدام st.secrets إذا كانت متوفرة، وإلا استخدام القاموس المباشر الآمن
-    if "gcp_service_account" in st.secrets:
-      creds_dict = dict(st.secrets["gcp_service_account"])
-      return gspread.service_account_from_dict(creds_dict).open(
-          "VeeXia_ERP_DB"
-      )
-
     pk = (
         "-----BEGIN PRIVATE KEY-----\n"
         "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC8mSMVEEGRh+2r"
@@ -86,7 +79,7 @@ def init_connection():
         "-----END PRIVATE KEY-----\n"
     )
 
-    creds = {
+    creds_dict = {
         "type": "service_account",
         "project_id": "veexia-erp",
         "private_key_id": "da558664cc7462ad484a66ca28d5663dfef96cc7",
@@ -101,7 +94,7 @@ def init_connection():
         ),
         "universe_domain": "googleapis.com",
     }
-    return gspread.service_account_from_dict(creds).open("VeeXia_ERP_DB")
+    return gspread.service_account_from_dict(creds_dict).open("VeeXia_ERP_DB")
   except Exception as e:
     st.error(f"خطأ الاتصال: {e}")
     return None
