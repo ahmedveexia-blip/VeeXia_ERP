@@ -91,13 +91,17 @@ else:
 
       st.markdown("---")
 
-      # صفحة المخزون والأصناف (الاستعراض والإضافة المباشرة)
+      # صفحة المخزون والأصناف (عرض الجدول مباشرة بوضوح تام)
       if st.session_state.current_page == "المخزون والأصناف":
-        st.markdown("### 📦 المخزون والأرصدة الحالية - استعراض وإضافة الأصناف")
+        st.markdown("### 📦 المخزون والأرصدة الحالية - جدول المنتجات والأكواد")
 
         if ws_titles:
+          # اختيار التبويب (مع اختيار افتراضي لتبويب pk أو أول تبويب تلقائياً)
+          default_idx = (
+              ws_titles.index("pk") if "pk" in ws_titles else 0
+          )
           selected_sheet = st.selectbox(
-              "اختر التبويب أو الشيت المطلوب:", ws_titles
+              "اختر الشيت / التبويب:", ws_titles, index=default_idx
           )
 
           if selected_sheet:
@@ -105,33 +109,36 @@ else:
             data = ws.get_all_values()
 
             st.markdown("---")
-            st.markdown(
-                f"#### 📋 جدول المنتجات والأكواد الحالية في (`{selected_sheet}`)"
-            )
-
             if len(data) > 0:
               headers = data[0]
               rows = data[1:] if len(data) > 1 else []
               df = pd.DataFrame(rows, columns=headers if rows else None)
               df = df.dropna(how="all")
 
-              # عرض الجدول بكل المنتجات والأكواد
-              st.dataframe(df, use_container_width=True)
-              st.info(f"📊 إجمالي عدد السجلات والأصناف: **{len(df)}**")
+              # عرض جدول المنتجات والأكواد بشكل ظاهر وبارز جداً
+              st.markdown(
+                  f"#### 📊 جدول الأكواد والأصناف النشط في (`{selected_sheet}`)"
+              )
+              st.dataframe(df, use_container_width=True, height=350)
+              st.info(
+                  f"إجمالي عدد الأصناف المسجلة في الجدول: **{len(df)}** صنف"
+              )
             else:
               st.warning("هذا التبويب فارغ حالياً.")
 
             st.markdown("---")
-            st.markdown("#### ➕ إضافة صنف أو كود جديد إلى الجدول")
+            st.markdown("#### ➕ إضافة صنف أو كود جديد مباشرة إلى الجدول")
 
-            with st.form("add_item_form_direct", clear_on_submit=True):
+            with st.form("add_item_visible_form", clear_on_submit=True):
               c1, c2 = st.columns(2)
               with c1:
                 new_code = st.text_input("كود الصنف (Item Code)")
               with c2:
                 new_name = st.text_input("اسم الصنف (Item Name)")
 
-              submitted = st.form_submit_button("حفظ وإضافة الصنف لجوجل شيت")
+              submitted = st.form_submit_button(
+                  "حفظ وإضافة الصنف لجوجل شيت فوراً"
+              )
               if submitted:
                 if new_code and new_name:
                   try:
